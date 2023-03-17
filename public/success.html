@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+</head>
+
+<body>
+    <h5>Success</h5>
+    <h1>Fill this form to crate event in Google calendar
+        <br><br>
+        <form>
+            <label for="summary">Summary:</label>
+            <input type="text" id="summary" name="summary"><br><br>
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location"><br><br>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description"><br><br>
+            <label for="start">Start:</label>
+            <input type="datetime-local" id="start" name="start"><br><br>
+            <label for="end">End:</label>
+            <input type="datetime-local" id="end" name="end"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </h1>
+
+</body>
+<script>
+    let params = {}
+
+    let regex = /([^&=]+)=([^&]*)/g, m
+
+    while (m = regex.exec(location.href)) {
+        params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+    }
+
+    if (Object.keys(params).length > 0) {
+        localStorage.setItem('authInfo', JSON.stringify(params));
+    }
+
+    // window.history.pushState({}, document.title, "/" + "/success");
+
+
+
+    let info = JSON.parse(localStorage.getItem('authInfo'))
+    console.log(JSON.parse(localStorage.getItem('authInfo')))
+    fetch("http://localhost:4400/createToken", {
+        method: "POST",
+        body: JSON.stringify({
+            authInfo: info,
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    }).then(response => response.json())
+        .then(data => {
+            console.log(data.tokens); // should output "Response received"
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+
+
+
+
+
+    // send form data and make an event 
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent the form from submitting normally
+        
+        let formData = {
+            summary: document.getElementById('summary').value,
+            location: document.getElementById('location').value,
+            description: document.getElementById('description').value,
+            start: document.getElementById('start').value,
+            end: document.getElementById('end').value,
+
+
+
+        } // Create a new FormData object to store the form data
+
+        // console.log(formData)
+        // Send a POST request to the server with the form data in the request body
+        fetch('http://localhost:4400/createEvent', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                // Handle the response data here
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                // Handle errors here
+            });
+    });
+
+
+</script>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>OAuth2 Sign in with calender scop</h1>
+    <Button onclick="signIn()">Sign In With Google</Button>
+    
+</body>
+<script>
+    // Client ID
+// 974935965592-lpojfpui5rl7d3rdkpaapaj65okklt4b.apps.googleusercontent.com
+// Client secret
+// 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
+
+
+
+function signIn(){
+    let oauth2Endpoint ='https://accounts.google.com/o/oauth2/v2/auth';
+
+    let form = document.createElement('form')
+    form.setAttribute('method','GET')
+    form.setAttribute('action',oauth2Endpoint)
+
+    let params ={
+        'client_id':'974935965592-lpojfpui5rl7d3rdkpaapaj65okklt4b.apps.googleusercontent.com',
+        "redirect_uri":'http://localhost:4400/success',
+        'response_type':'code',
+        "cookiePolicy":'sigle_host_origin',
+        "scope":'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email  https://www.googleapis.com/auth/calendar',
+        "include_granted_scopes":'true',
+        'state':'pass-throught-value',
+        'access_type':"offline",
+        "prompt":"consent"
+
+    }
+
+    for(let p in params){
+        // console.log(p,params[p])
+        let input = document.createElement('input');
+        input.setAttribute('type','hidden')
+        input.setAttribute('name',p)
+        input.setAttribute('value',params[p])
+        form.appendChild(input);
+    }
+    document.body.appendChild(form)
+    form.submit()
+}
+
+</script>
+</html>
