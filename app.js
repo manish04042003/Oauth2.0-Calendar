@@ -51,44 +51,51 @@ app.post("/createEvent", async (req, res) => {
     let { summary, location, description, start, end } = req.body;
     oauthclient.setCredentials({ refresh_token: refresh_token });
     const calendar = google.calendar("v3");
-    const response = await calendar.events.insert({
-      auth: oauthclient,
-      calendarId: "primary",
-      requestBody: {
-        summary: summary,
-        description: description,
-        location: location,
-        colorId: "2",
-        start: {
-          dateTime: new Date(start),
-          timeZone: "Asia/Kolkata",
-        },
-        end: {
-          dateTime: new Date(end),
-          timeZone: "Asia/Kolkata",
-        },
-        conferenceData: {
-          createRequest: {
-            conferenceSolutionKey: {
-              type: "hangoutsMeet",
-            },
-            requestId: "some-random-string",
+    const response = await calendar.events.insert(
+      {
+        auth: oauthclient,
+        calendarId: "primary",
+        requestBody: {
+          summary: summary,
+          description: description,
+          location: location,
+          colorId: "2",
+          start: {
+            dateTime: new Date(start),
+            timeZone: "Asia/Kolkata",
           },
-        }, 
-        reminders: {
-            useDefault: false
-          }
-
+          end: {
+            dateTime: new Date(end),
+            timeZone: "Asia/Kolkata",
+          },
+          conferenceData: {
+            createRequest: {
+              conferenceSolutionKey: {
+                type: "hangoutsMeet",
+              },
+              requestId: "some-random-string",
+            },
+          },
+          attendees: [{ email: "doodlebookofficial@gmail.com" }],
+          reminders: {
+            useDefault: true
+            // overrides: [
+            //     { 'method': 'email', 'minutes': 24 * 60 },
+            //     { 'method': 'popup', 'minutes': 10 }
+            // ]
+        },
+        },
+        conferenceDataVersion: 1,
       },
-      conferenceDataVersion: 1,
-    },(err, res) => {
+      (err, res) => {
         if (err) {
           console.error(`Error creating event: ${err}`);
           return;
         }
         const meetLink = res.data.hangoutLink;
         console.log(`Event created with Meet link: ${meetLink}`);
-      });
+      }
+    );
 
     // console.log(req.body)
     res.status(200).json({ response: response });
