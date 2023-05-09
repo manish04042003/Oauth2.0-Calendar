@@ -13,7 +13,7 @@ let Google_client_secret = "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";
 let redirect_link = "http://localhost:4400/success";
 
 let refresh_token =
-  "1//0gZ8kJUSgwz9vCgYIARAAGBASNwF-L9Irsiijbt3sv9ajsBJT4WgdpMboVn3IMUX-YTrV77cCueEEHL0ceeDNe4kbMCIdR47CTtg";
+"1//0gqwYtIY2tDYPCgYIARAAGBASNwF-L9IrN2p9jyG5QfybUSoqfXYmor2DrFZN_-FQ4owtW0-l5sPfxkaVz6B13ERhaeKVV_wdm7w";
 
 const oauthclient = new google.auth.OAuth2(
   Google_client_id,
@@ -76,7 +76,7 @@ app.post("/createEvent", async (req, res) => {
               requestId: "some-random-string",
             },
           },
-          attendees: [{ email: "doodlebookofficial@gmail.com" }],
+          attendees: [{ email: "doodlebookofficial@gmail.com" },{email: 'manishjaiswal98765@gmail.com'}],
           reminders: {
             useDefault: true
             // overrides: [
@@ -84,6 +84,8 @@ app.post("/createEvent", async (req, res) => {
             //     { 'method': 'popup', 'minutes': 10 }
             // ]
         },
+        guestsCanModify: false ,
+        guestsCanSeeOtherGuests: false
         },
         conferenceDataVersion: 1,
       },
